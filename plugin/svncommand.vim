@@ -1,12 +1,12 @@
 " vim600: set foldmethod=marker ts=2 sts=2:
-" $Id: svncommand.vim 876 2004-02-26 04:14:24Z laz $
+" $Id: svncommand.vim 879 2004-02-26 04:46:28Z laz $
 "
 " Vim plugin to assist in working with SVN-controlled files.
 "
-" Last Change:   $Date: 2004-02-25 23:14:24 -0500 (Wed, 25 Feb 2004) $
+" Last Change:   $Date: 2004-02-25 23:46:28 -0500 (Wed, 25 Feb 2004) $
 " Maintainer:    Adam Lazur <adam@lazur.org>
 " License:       This file is placed in the public domain.
-" Version:       1
+" Version:       2
 "
 " Section: Documentation {{{1
 "
@@ -30,8 +30,8 @@
 " SVNAdd        Performs "svn add" on the current file.
 "
 " SVNAnnotate   Performs "svn annotate" on the current file.  If not given an
-"               argument, uses the most recent version of the file on the current
-"               branch.  Otherwise, the argument is used as a revision number.
+"               argument, uses the most recent version of the file.
+"               Otherwise, the argument is used as a revision number.
 "
 " SVNCommit     This is a two-stage command.  The first step opens a buffer to
 "               accept a log message.  When that buffer is written, it is
@@ -57,6 +57,8 @@
 "               retrieved into a new buffer.
 "
 " SVNStatus     Performs "svn status" on the current file.
+"
+" SVNInfo       Performs "svn info" on the current file.
 "
 " SVNUpdate     Performs "svn update" on the current file.
 "
@@ -86,6 +88,8 @@
 "   <Leader>sl SVNLog
 "   <Leader>sr SVNReview
 "   <Leader>ss SVNStatus
+"   <Leader>si SVNInfo
+"   <Leader>sq SVNRevert
 "   <Leader>sv SVNVimDiff
 "
 " Options:
@@ -413,6 +417,11 @@ function! s:SVNStatus()
   return s:SVNDoCommand('svn status -v', 'svnstatus')
 endfunction
 
+" Function: s:SVNInfo() {{{2
+function! s:SVNInfo()
+  return s:SVNDoCommand('svn info', 'svninfo')
+endfunction
+
 " Function: s:SVNUpdate() {{{2
 function! s:SVNUpdate()
   return s:SVNDoCommand('svn update', 'update')
@@ -472,6 +481,7 @@ com! SVNLog call s:SVNLog()
 com! -nargs=? SVNRevert call s:SVNRevert(<f-args>)
 com! -nargs=? SVNReview call s:SVNReview(<f-args>)
 com! SVNStatus call s:SVNStatus()
+com! SVNInfo call s:SVNInfo()
 com! SVNUpdate call s:SVNUpdate()
 com! -nargs=* SVNVimDiff call s:SVNVimDiff(<f-args>)
 
@@ -484,6 +494,7 @@ nnoremap <unique> <Plug>SVNLog :SVNLog<CR>
 nnoremap <unique> <Plug>SVNRevert :SVNRevert<CR>
 nnoremap <unique> <Plug>SVNReview :SVNReview<CR>
 nnoremap <unique> <Plug>SVNStatus :SVNStatus<CR>
+nnoremap <unique> <Plug>SVNInfo :SVNInfo<CR>
 nnoremap <unique> <Plug>SVNUpdate :SVNUpdate<CR>
 nnoremap <unique> <Plug>SVNVimDiff :SVNVimDiff<CR>
 
@@ -512,6 +523,9 @@ endif
 if !hasmapto('<Plug>SVNStatus')
   nmap <unique> <Leader>ss <Plug>SVNStatus
 endif
+if !hasmapto('<Plug>SVNInfo')
+  nmap <unique> <Leader>si <Plug>SVNInfo
+endif
 if !hasmapto('<Plug>SVNUpdate')
   nmap <unique> <Leader>su <Plug>SVNUpdate
 endif
@@ -528,5 +542,6 @@ amenu <silent> &Plugin.SVN.&Log      <Plug>SVNLog
 amenu <silent> &Plugin.SVN.Revert    <Plug>SVNRevert
 amenu <silent> &Plugin.SVN.&Review   <Plug>SVNReview
 amenu <silent> &Plugin.SVN.&Status   <Plug>SVNStatus
+amenu <silent> &Plugin.SVN.&Info     <Plug>SVNInfo
 amenu <silent> &Plugin.SVN.&Update   <Plug>SVNUpdate
 amenu <silent> &Plugin.SVN.&VimDiff  <Plug>SVNVimDiff
