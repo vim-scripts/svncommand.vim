@@ -1,0 +1,13 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=922
+
+This is no longer maintained. See vcscommand vimscript #90 for a suitable replacement.
+
+
+
+This is almost a straight port of cvscommand.vim to support subversion. There's some stuff hacked out, some stuff hacked in, and a lot of s/CVS/SVN/g going on.
+
+Current support is for single file type ops, just like cvscommand.vim. The commandset available is basically: status, info, update, revert, diff, annotate, commit, add, log, vimdiff, review. It can also parse a svn commit buffer and execute a diff based on that (you'll have to setup a mapping for SVNCommitDiff to do this).
+
+There is no support for properties, operating on whole directories, or anything super advanced.
+
+As of 1.67.3 there is limited svk (http://svk.elixus.org) support via the SVNCommandAutoSVK. Useful stuff like diff and log work okay, the rest is YMMV for now.
