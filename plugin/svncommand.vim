@@ -1,11 +1,11 @@
 " vim600: set foldmethod=marker:
 "
-" $Id: svncommand.vim 26 2005-04-17 14:49:28Z laz $
+" $Id: svncommand.vim 29 2005-04-19 00:22:27Z laz $
 "
 " Vim plugin to assist in working with SVN-controlled files.
 "
-" Last Change:   $Date: 2005-04-17 10:49:28 -0400 (Sun, 17 Apr 2005) $
-" Version:       1.67.2
+" Last Change:   $Date: 2005-04-18 20:22:27 -0400 (Mon, 18 Apr 2005) $
+" Version:       1.67.3
 " Maintainer:    Adam Lazur <adam@lazur.org>
 " License:       This file is placed in the public domain.
 " Credits:       Bob Hiestand and all the cvscommand.vim credits.
@@ -20,6 +20,7 @@
 "                let SVNCommandCommitOnWrite=1
 "                let SVNCommandEdit='split'
 "                let SVNCommandNameResultBuffers=1
+"                let SVNCommandAutoSVK='svk'
 "
 " Section: Documentation {{{1
 "
@@ -186,6 +187,14 @@
 "   one another.  If set to 'vertical', the resulting windows will be
 "   side-by-side.  If not set, it defaults to 'horizontal' for all but
 "   SVNVimDiff windows.
+"
+" SVNCommandAutoSVK
+"   This variable is a hack to allow svncommand.vim to work for basic svk
+"   operations. It MUST be used in combination with
+"   SVNCommandEnableBufferSetup. During buffer setup, the script will stat
+"   .svn/entries, and if it doesn't exist, it sets the svn executable name
+"   (b:SVNCommandSVNExec) to the value of SVNCommandAutoSVK. This hack works
+"   only because of the similarity in commandlines between svn and svk.
 "
 " Event documentation {{{2
 "   For additional customization, svncommand.vim uses User event autocommand
@@ -534,6 +543,15 @@ function! s:SVNSetupBuffer()
 
   if !filereadable(expand("%"))
     return -1
+  endif
+
+  " check for SVNCommandAutoSVK to do evil overriding
+  if s:SVNGetOption("SVNCommandAutoSVK", 'unset') != 'unset'
+    " The first thing we do is check for a .svn file, if it's not there, then
+    " we go into svk mode MUAHAHAHAHA
+    if !filereadable('.svn/entries')
+      let b:SVNCommandSVNExec = s:SVNGetOption("SVNCommandAutoSVK", 'svk')
+    endif
   endif
 
   let revision=""
@@ -888,7 +906,7 @@ endfunction
 
 " Function: s:SVNInfo() {{{2
 function! s:SVNInfo()
-  return s:SVNDoCommand('svn info', 'svninfo')
+  return s:SVNDoCommand('info', 'svninfo', '')
 endfunction
 
 " Function: s:SVNUpdate() {{{2
